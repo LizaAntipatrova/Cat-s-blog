@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode
 @Table(name = "users")
 public class User {
@@ -17,6 +16,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "increment")
     private Long id;
 
+    public User(String username, Role userRole) {
+        this.username = username;
+        this.userRole = userRole;
+    }
 
     @Column(unique = true)
     private String username;
