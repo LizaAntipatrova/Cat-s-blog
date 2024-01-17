@@ -20,10 +20,10 @@ public class Blogpost {
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "increment")
     private Long id;
 
-    private String content;         //?
+    private String content;         //html mb
     private String title;
-    @ManyToOne(fetch = FetchType.EAGER)
 
+    @ManyToOne(fetch = FetchType.EAGER)
     private User author;
     private Date publicationDate;
 
