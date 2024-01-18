@@ -22,11 +22,12 @@ public class StandardUserService implements UserService {
 
     @Override
     public boolean add(String username) {
-        if (userRepository.findByUsername(username) != null) {
+
+        if (userRepository.findByUsername(username) == null) {
             User addedUser = new User(
                     username,
                     roleRepository.findByName(RoleType.USER));
-            userRepository.save(addedUser);
+            userRepository.saveAndFlush(addedUser);
             return true;
         }
         return false;
@@ -39,7 +40,7 @@ public class StandardUserService implements UserService {
             User updatedUser = (User) foundUser.get();
             updatedUser.setUsername(username);
             updatedUser.setUserRole(userRole);
-            userRepository.save(updatedUser);
+            userRepository.saveAndFlush(updatedUser);
             return true;
         }
         return false;

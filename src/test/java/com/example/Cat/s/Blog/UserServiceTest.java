@@ -6,42 +6,43 @@ import com.example.Cat.s.Blog.entity.roles.Role;
 import com.example.Cat.s.Blog.entity.roles.RoleType;
 import com.example.Cat.s.Blog.entity.users.User;
 import com.example.Cat.s.Blog.services.user.impl.StandardUserService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-//@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 public class UserServiceTest {
-    @Mock
-//    @Autowired
+    @Autowired
     private UserRepository userRepository;
-    @Mock
-//    @Autowired
+    @Autowired
     private RoleRepository roleRepository;
-    //    @InjectMocks
-//    @Autowired
+    @Autowired
     private StandardUserService userService;
 
     private User user;
-    private final String usernameSaved = "username0";
+    private final String usernameSaved = "username000";
     private final String usernameNonSaved = "username";
     private final Long idSaved = 1L;
     private final Long idNonSaved = 2L;
     private final Role role = new Role(RoleType.USER);
 
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
-        userService = new StandardUserService(userRepository, roleRepository);
-        user = new User("username0", role);
-        userRepository.save(user);
-        roleRepository.save(role);
-
-    }
+//    @BeforeEach
+//    public void setup() {
+//        if (roleRepository.findByName(RoleType.USER) == null) {
+//            roleRepository.saveAndFlush(role);
+//        }
+//        user = new User(usernameSaved, role);
+//        userRepository.saveAndFlush(user);
+//    }
+//
+//
+//    @AfterEach
+//    public void cleanUp() {
+//        userRepository.deleteAll();
+//    }
 
     @Test
     public void addTestWhenUserAddedThenUserWithThatUsernameAppearsInRepository() {
@@ -94,7 +95,7 @@ public class UserServiceTest {
 
     @Test
     public void deleteTestWhenUpdateUserWithIdThatInRepositoryThenTrue() {
-        Assertions.assertTrue(userService.update(idSaved, usernameNonSaved, role));
+        Assertions.assertTrue(userService.update(0L, usernameNonSaved, role));
     }
 
     @Test

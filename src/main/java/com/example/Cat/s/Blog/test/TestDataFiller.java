@@ -28,17 +28,17 @@ public class TestDataFiller {
         Role roleUsr = new Role(RoleType.USER);
         Role roleAdm = new Role(RoleType.ADMIN);
 
-        repositoryRole.save(roleAdm);
-        repositoryRole.save(roleUsr);
+        repositoryRole.saveAndFlush(roleAdm);
+        repositoryRole.saveAndFlush(roleUsr);
 
 
         for (int i = 1; i < 3; i++) {
             User usr = new User("usr " + i, roleUsr);
             User adm = new User("usr 1" + i, roleAdm);
-            repositoryUser.save(usr);
-            repositoryUser.save(adm);
+            repositoryUser.saveAndFlush(usr);
+            repositoryUser.saveAndFlush(adm);
             Blogpost post = new Blogpost("content " + i, "title " + i, usr, new Date(System.currentTimeMillis()));
-            repositoryPost.save(post);
+            repositoryPost.saveAndFlush(post);
         }
 
     }
