@@ -15,6 +15,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class UserServiceTest {
+    private final String usernameSaved = "username000";
+    private final String usernameNonSaved = "username";
+    private final Role role = new Role(RoleType.USER);
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -23,26 +27,21 @@ public class UserServiceTest {
     private StandardUserService userService;
 
     private User user;
-    private final String usernameSaved = "username000";
-    private final String usernameNonSaved = "username";
-    private final Long idSaved = 1L;
-    private final Long idNonSaved = 2L;
-    private final Role role = new Role(RoleType.USER);
 
-//    @BeforeEach
-//    public void setup() {
-//        if (roleRepository.findByName(RoleType.USER) == null) {
-//            roleRepository.saveAndFlush(role);
-//        }
-//        user = new User(usernameSaved, role);
-//        userRepository.saveAndFlush(user);
-//    }
-//
-//
-//    @AfterEach
-//    public void cleanUp() {
-//        userRepository.deleteAll();
-//    }
+    @BeforeEach
+    public void setup() {
+        roleRepository.saveAndFlush(role);
+
+        user = new User(usernameSaved, role);
+        userRepository.saveAndFlush(user);
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        userRepository.deleteAll();
+        roleRepository.deleteAll();
+
+    }
 
     @Test
     public void addTestWhenUserAddedThenUserWithThatUsernameAppearsInRepository() {
@@ -64,12 +63,14 @@ public class UserServiceTest {
 
     @Test
     public void updateTestWhenUpdateUserThenNumberOfRecordsInRepositoryNotChange() {
+        Long idSaved = user.getId();
         userService.update(idSaved, usernameNonSaved, role);
         Assertions.assertEquals(userRepository.count(), 1);
     }
 
     @Test
     public void updateTestWhenUpdateUserThenInformationChange() {
+        Long idSaved = user.getId();
         Assertions.assertEquals(userRepository.findById(idSaved).get().getUsername(), usernameSaved);
         userService.update(idSaved, usernameNonSaved, role);
         Assertions.assertEquals(userRepository.findById(idSaved).get().getUsername(), usernameNonSaved);
@@ -77,30 +78,33 @@ public class UserServiceTest {
 
     @Test
     public void updateTestWhenUpdateUserWithIdThatInRepositoryThenTrue() {
+        Long idSaved = user.getId();
         Assertions.assertTrue(userService.update(idSaved, usernameNonSaved, role));
     }
 
     @Test
     public void updateTestWhenUpdateUserWithIdThatNotInRepositoryThenFalse() {
-        Assertions.assertFalse(userService.update(idNonSaved, usernameNonSaved, role));
+        Assertions.assertFalse(userService.update(Long.MAX_VALUE - 1, usernameNonSaved, role));
     }
 
 
     @Test
     public void deleteTestWhenDeleteUserNumberOfRecordsInRepositoryDecreasing() {
+        Long idSaved = user.getId();
         Assertions.assertEquals(userRepository.count(), 1);
         userService.delete(idSaved);
         Assertions.assertEquals(userRepository.count(), 0);
     }
 
     @Test
-    public void deleteTestWhenUpdateUserWithIdThatInRepositoryThenTrue() {
-        Assertions.assertTrue(userService.update(0L, usernameNonSaved, role));
+    public void deleteTestWhenDeleteUserWithIdThatInRepositoryThenTrue() {
+        Long idSaved = user.getId();
+        Assertions.assertTrue(userService.delete(idSaved));
     }
 
     @Test
-    public void deleteTestWhenUpdateUserWithIdThatNotInRepositoryThenFalse() {
-        Assertions.assertFalse(userService.update(idNonSaved, usernameNonSaved, role));
+    public void deleteTestWhenDeleteUserWithIdThatNotInRepositoryThenFalse() {
+        Assertions.assertFalse(userService.delete(Long.MAX_VALUE - 1));
     }
 
 }

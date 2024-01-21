@@ -18,8 +18,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "increment")
     private Long id;
-//    @Column(unique = true)
-
+    @Column(unique = true)
     private String username;
     @ManyToOne(fetch = FetchType.EAGER)
     private Role userRole;

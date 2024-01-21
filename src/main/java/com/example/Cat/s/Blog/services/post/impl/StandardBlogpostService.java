@@ -6,10 +6,13 @@ import com.example.Cat.s.Blog.entity.repositories.UserRepository;
 import com.example.Cat.s.Blog.entity.users.User;
 import com.example.Cat.s.Blog.services.post.BlogpostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.Optional;
 
+
+@Service
 public class StandardBlogpostService implements BlogpostService {
     @Autowired
     BlogpostRepository blogpostRepository;
@@ -22,7 +25,7 @@ public class StandardBlogpostService implements BlogpostService {
         if (foundAuthor.isPresent()) {
             Date publicationDate = new Date(System.currentTimeMillis());
             Blogpost blogpost = new Blogpost(content, title, (User) foundAuthor.get(), publicationDate);
-            blogpostRepository.save(blogpost);
+            blogpostRepository.saveAndFlush(blogpost);
             return true;
         }
         return false;
@@ -32,7 +35,10 @@ public class StandardBlogpostService implements BlogpostService {
     public boolean edit(Long id, String content, String title) {
         Optional foundBlogpost = blogpostRepository.findById(id);
         if (foundBlogpost.isPresent()) {
-            blogpostRepository.save((Blogpost) foundBlogpost.get());
+            Blogpost blogpost = (Blogpost) foundBlogpost.get();
+            blogpost.setTitle(title);
+            blogpost.setContent(content);
+            blogpostRepository.saveAndFlush(blogpost);
             return true;
         }
         return false;

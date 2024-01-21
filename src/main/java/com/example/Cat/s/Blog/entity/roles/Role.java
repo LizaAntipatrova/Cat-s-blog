@@ -1,7 +1,9 @@
 package com.example.Cat.s.Blog.entity.roles;
 
-import com.sun.istack.NotNull;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -15,8 +17,7 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "increment")
     private Long id;
-//    @Column(unique = true)
-//    @NotNull
+    @Column(unique = true)
     private RoleType name;
 
     public Role(RoleType role) {
