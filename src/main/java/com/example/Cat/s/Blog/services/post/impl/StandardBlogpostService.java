@@ -1,30 +1,43 @@
 package com.example.Cat.s.Blog.services.post.impl;
 
-import com.example.Cat.s.Blog.entity.posts.Blogpost;
-import com.example.Cat.s.Blog.entity.repositories.BlogpostRepository;
-import com.example.Cat.s.Blog.entity.repositories.UserRepository;
-import com.example.Cat.s.Blog.entity.users.User;
+import com.example.Cat.s.Blog.db.entity.posts.Blogpost;
+import com.example.Cat.s.Blog.db.repositories.BlogpostRepository;
+import com.example.Cat.s.Blog.db.repositories.UserRepository;
+import com.example.Cat.s.Blog.db.entity.users.User;
 import com.example.Cat.s.Blog.services.post.BlogpostService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.Optional;
 
 
 @Service
+@RequiredArgsConstructor
 public class StandardBlogpostService implements BlogpostService {
-    @Autowired
-    BlogpostRepository blogpostRepository;
-    @Autowired
-    UserRepository userRepository;
+
+    private final BlogpostRepository blogpostRepository;
+
+    private final UserRepository userRepository;
+
+
+    @Override
+    public Optional<Blogpost> showById(Long id){
+        return blogpostRepository.findById(id);
+    }
+
+    @Override
+    public List<Blogpost> showAll(){
+        return blogpostRepository.findAll();
+    }
 
     @Override
     public boolean publish(String content, String title, Long authorId) {
-        Optional foundAuthor = userRepository.findById(authorId);
+        Optional<User> foundAuthor = userRepository.findById(authorId);
         if (foundAuthor.isPresent()) {
             Date publicationDate = new Date(System.currentTimeMillis());
-            Blogpost blogpost = new Blogpost(content, title, (User) foundAuthor.get(), publicationDate);
+            Blogpost blogpost = new Blogpost(content, title, foundAuthor.get(), publicationDate);
             blogpostRepository.saveAndFlush(blogpost);
             return true;
         }
@@ -33,9 +46,9 @@ public class StandardBlogpostService implements BlogpostService {
 
     @Override
     public boolean edit(Long id, String content, String title) {
-        Optional foundBlogpost = blogpostRepository.findById(id);
+        Optional<Blogpost> foundBlogpost = blogpostRepository.findById(id);
         if (foundBlogpost.isPresent()) {
-            Blogpost blogpost = (Blogpost) foundBlogpost.get();
+            Blogpost blogpost = foundBlogpost.get();
             blogpost.setTitle(title);
             blogpost.setContent(content);
             blogpostRepository.saveAndFlush(blogpost);
@@ -46,9 +59,9 @@ public class StandardBlogpostService implements BlogpostService {
 
     @Override
     public boolean delete(Long id) {
-        Optional foundBlogpost = blogpostRepository.findById(id);
+        Optional<Blogpost> foundBlogpost = blogpostRepository.findById(id);
         if (foundBlogpost.isPresent()) {
-            blogpostRepository.delete((Blogpost) foundBlogpost.get());
+            blogpostRepository.delete(foundBlogpost.get());
             return true;
         }
         return false;

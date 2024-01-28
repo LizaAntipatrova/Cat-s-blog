@@ -1,4 +1,4 @@
-package com.example.Cat.s.Blog.entity.roles;
+package com.example.Cat.s.Blog.db.entity.roles;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,6 +18,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "increment")
     private Long id;
     @Column(unique = true)
+    @Enumerated(EnumType.STRING)        //храним енам как строку
     private RoleType name;
 
     public Role(RoleType role) {

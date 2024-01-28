@@ -1,6 +1,6 @@
-package com.example.Cat.s.Blog.entity.posts;
+package com.example.Cat.s.Blog.db.entity.posts;
 
-import com.example.Cat.s.Blog.entity.users.User;
+import com.example.Cat.s.Blog.db.entity.users.User;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

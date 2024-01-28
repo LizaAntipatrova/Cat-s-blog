@@ -1,12 +1,12 @@
 package com.example.Cat.s.Blog;
 
-import com.example.Cat.s.Blog.entity.posts.Blogpost;
-import com.example.Cat.s.Blog.entity.repositories.BlogpostRepository;
-import com.example.Cat.s.Blog.entity.repositories.RoleRepository;
-import com.example.Cat.s.Blog.entity.repositories.UserRepository;
-import com.example.Cat.s.Blog.entity.roles.Role;
-import com.example.Cat.s.Blog.entity.roles.RoleType;
-import com.example.Cat.s.Blog.entity.users.User;
+import com.example.Cat.s.Blog.db.entity.posts.Blogpost;
+import com.example.Cat.s.Blog.db.repositories.BlogpostRepository;
+import com.example.Cat.s.Blog.db.repositories.RoleRepository;
+import com.example.Cat.s.Blog.db.repositories.UserRepository;
+import com.example.Cat.s.Blog.db.entity.roles.Role;
+import com.example.Cat.s.Blog.db.entity.roles.RoleType;
+import com.example.Cat.s.Blog.db.entity.users.User;
 import com.example.Cat.s.Blog.services.post.impl.StandardBlogpostService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.transaction.Transactional;
 import java.sql.Date;
 
 @SpringBootTest

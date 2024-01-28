@@ -1,24 +1,34 @@
 package com.example.Cat.s.Blog.services.user.impl;
 
-import com.example.Cat.s.Blog.entity.repositories.RoleRepository;
-import com.example.Cat.s.Blog.entity.repositories.UserRepository;
-import com.example.Cat.s.Blog.entity.roles.Role;
-import com.example.Cat.s.Blog.entity.roles.RoleType;
-import com.example.Cat.s.Blog.entity.users.User;
+import com.example.Cat.s.Blog.db.repositories.RoleRepository;
+import com.example.Cat.s.Blog.db.repositories.UserRepository;
+import com.example.Cat.s.Blog.db.entity.roles.Role;
+import com.example.Cat.s.Blog.db.entity.roles.RoleType;
+import com.example.Cat.s.Blog.db.entity.users.User;
 import com.example.Cat.s.Blog.services.user.UserService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class StandardUserService implements UserService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
+
+    private final UserRepository userRepository;
+
+    private final RoleRepository roleRepository;
+
+    @Override
+    public Optional<User> showById(Long id){
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public List<User> showAll(){
+        return userRepository.findAll();
+    }
 
     @Override
     public boolean add(String username) {
@@ -35,9 +45,9 @@ public class StandardUserService implements UserService {
 
     @Override
     public boolean update(Long id, String username, Role userRole) {
-        Optional foundUser = userRepository.findById(id);
+        Optional<User> foundUser = userRepository.findById(id);
         if (foundUser.isPresent()) {
-            User updatedUser = (User) foundUser.get();
+            User updatedUser = foundUser.get();
             updatedUser.setUsername(username);
             updatedUser.setUserRole(userRole);
             userRepository.saveAndFlush(updatedUser);
@@ -48,7 +58,7 @@ public class StandardUserService implements UserService {
 
     @Override
     public boolean delete(Long id) {
-        Optional foundUser = userRepository.findById(id);
+        Optional<User> foundUser = userRepository.findById(id);
         if (foundUser.isPresent()) {
             userRepository.deleteById(id);
             return true;
