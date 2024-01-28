@@ -1,10 +1,10 @@
 package com.example.Cat.s.Blog.services.user.impl;
 
-import com.example.Cat.s.Blog.db.repositories.RoleRepository;
-import com.example.Cat.s.Blog.db.repositories.UserRepository;
 import com.example.Cat.s.Blog.db.entity.roles.Role;
 import com.example.Cat.s.Blog.db.entity.roles.RoleType;
 import com.example.Cat.s.Blog.db.entity.users.User;
+import com.example.Cat.s.Blog.db.repositories.RoleRepository;
+import com.example.Cat.s.Blog.db.repositories.UserRepository;
 import com.example.Cat.s.Blog.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,12 +21,13 @@ public class StandardUserService implements UserService {
     private final RoleRepository roleRepository;
 
     @Override
-    public Optional<User> showById(Long id){
+    public Optional<User> showById(Long id) {
+
         return userRepository.findById(id);
     }
 
     @Override
-    public List<User> showAll(){
+    public List<User> showAll() {
         return userRepository.findAll();
     }
 
