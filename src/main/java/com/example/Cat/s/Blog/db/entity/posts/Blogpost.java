@@ -23,6 +23,7 @@ public class Blogpost {
     private String content;         //html mb
     private String title;
 
+    @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.EAGER)
     private User author;
     private Date publicationDate;
@@ -33,5 +34,7 @@ public class Blogpost {
         this.author = author;
         this.publicationDate = publicationDate;
     }
+
+
 }
 

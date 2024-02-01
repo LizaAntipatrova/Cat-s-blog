@@ -1,9 +1,11 @@
 package com.example.Cat.s.Blog.services.post.impl;
 
 import com.example.Cat.s.Blog.db.entity.posts.Blogpost;
+import com.example.Cat.s.Blog.db.entity.users.User;
 import com.example.Cat.s.Blog.db.repositories.BlogpostRepository;
 import com.example.Cat.s.Blog.db.repositories.UserRepository;
-import com.example.Cat.s.Blog.db.entity.users.User;
+import com.example.Cat.s.Blog.services.exceptions.NonExistingBlogpostException;
+import com.example.Cat.s.Blog.services.exceptions.NonExistingUserException;
 import com.example.Cat.s.Blog.services.post.BlogpostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,47 +25,49 @@ public class StandardBlogpostService implements BlogpostService {
 
 
     @Override
-    public Optional<Blogpost> showById(Long id){
-        return blogpostRepository.findById(id);
+    public Blogpost showById(Long id) {
+        Optional<Blogpost> foundBlogpost = blogpostRepository.findById(id);
+        if (foundBlogpost.isEmpty()) {
+            throw new NonExistingBlogpostException();
+        }
+        return foundBlogpost.get();
     }
 
     @Override
-    public List<Blogpost> showAll(){
+    public List<Blogpost> showAll() {
         return blogpostRepository.findAll();
     }
 
     @Override
-    public boolean publish(String content, String title, Long authorId) {
+    public void publish(String content, String title, Long authorId) {
         Optional<User> foundAuthor = userRepository.findById(authorId);
-        if (foundAuthor.isPresent()) {
-            Date publicationDate = new Date(System.currentTimeMillis());
-            Blogpost blogpost = new Blogpost(content, title, foundAuthor.get(), publicationDate);
-            blogpostRepository.saveAndFlush(blogpost);
-            return true;
+        if (foundAuthor.isEmpty()) {
+            throw new NonExistingUserException();
         }
-        return false;
+        Date publicationDate = new Date(System.currentTimeMillis());
+        Blogpost blogpost = new Blogpost(content, title, foundAuthor.get(), publicationDate);
+        blogpostRepository.saveAndFlush(blogpost);
     }
 
     @Override
-    public boolean edit(Long id, String content, String title) {
+    public void edit(Long id, String content, String title) {
         Optional<Blogpost> foundBlogpost = blogpostRepository.findById(id);
-        if (foundBlogpost.isPresent()) {
-            Blogpost blogpost = foundBlogpost.get();
-            blogpost.setTitle(title);
-            blogpost.setContent(content);
-            blogpostRepository.saveAndFlush(blogpost);
-            return true;
+        if (foundBlogpost.isEmpty()) {
+            throw new NonExistingBlogpostException();
         }
-        return false;
+        Blogpost blogpost = foundBlogpost.get();
+        blogpost.setTitle(title);
+        blogpost.setContent(content);
+        blogpostRepository.saveAndFlush(blogpost);
     }
 
     @Override
-    public boolean delete(Long id) {
+    public void delete(Long id) {
         Optional<Blogpost> foundBlogpost = blogpostRepository.findById(id);
-        if (foundBlogpost.isPresent()) {
-            blogpostRepository.delete(foundBlogpost.get());
-            return true;
+        if (foundBlogpost.isEmpty()) {
+            throw new NonExistingBlogpostException();
         }
-        return false;
+        blogpostRepository.delete(foundBlogpost.get());
+
     }
 }

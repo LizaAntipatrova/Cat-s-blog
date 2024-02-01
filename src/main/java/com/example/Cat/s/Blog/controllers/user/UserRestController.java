@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,22 +42,15 @@ class UserRestController {
 
     @GetMapping(value = "/{id}")
     public UserDTO getUserById(@PathVariable("id") Long id) {
-        Optional<User> user = userService.showById(id);
-        if (user.isPresent()) {
-            return userMapper.userToUserDTO(user.get());
-        }
-        return new UserDTO();
-
+        return userMapper.userToUserDTO(userService.showById(id));
     }
 
     @GetMapping(value = "/{id}/posts")
     public List<TitlePostDTO> getUsersPostsByUserId(@PathVariable("id") Long id) {
         var user = userService.showById(id);
-        return user
-                .map(value -> value.getPosts()
+        return user.getPosts()
                 .stream()
-                .map(blogpostMapper::blogpostToTitlePostDTO).toList())
-                .orElseGet(ArrayList::new);
+                .map(blogpostMapper::blogpostToTitlePostDTO).toList();
 
     }
 

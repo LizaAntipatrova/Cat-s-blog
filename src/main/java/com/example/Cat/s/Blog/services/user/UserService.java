@@ -2,19 +2,19 @@ package com.example.Cat.s.Blog.services.user;
 
 import com.example.Cat.s.Blog.db.entity.roles.Role;
 import com.example.Cat.s.Blog.db.entity.users.User;
+import com.example.Cat.s.Blog.services.exceptions.NonExistingUserException;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
 
-    Optional<User> showById(Long id);
+    User showById(Long id);
 
     List<User> showAll();
 
-    boolean add(String username);
+    void add(String username);
 
-    boolean update(Long id, String username, Role userRole);
+    void update(Long id, String username, Role userRole) throws NonExistingUserException;
 
-    boolean delete(Long id);
+    void delete(Long id);
 }

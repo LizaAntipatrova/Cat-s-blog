@@ -22,9 +22,12 @@ public class User {
     private Long id;
     @Column(unique = true)
     private String username;
+
+    @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.EAGER)
     private Role userRole;
 
+    @EqualsAndHashCode.Exclude
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "author")
     private List<Blogpost> posts;
 

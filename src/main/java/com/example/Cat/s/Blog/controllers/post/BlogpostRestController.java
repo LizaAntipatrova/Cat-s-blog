@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,12 +29,8 @@ public class BlogpostRestController {
 
 
     @GetMapping(value = "/{id}")
-    public PostDTO getUserById(@PathVariable("id") Long id) {
-        Optional<Blogpost> user = blogpostService.showById(id);
-        if (user.isPresent()) {
-            return blogpostMapper.blogpostToPostDTO(user.get());
-        }
-        return new PostDTO();
+    public PostDTO getBlogpostById(@PathVariable("id") Long id) {
+        return blogpostMapper.blogpostToPostDTO(blogpostService.showById(id));
 
     }
 

@@ -1,14 +1,13 @@
 package com.example.Cat.s.Blog.test;
 
 import com.example.Cat.s.Blog.db.entity.posts.Blogpost;
-import com.example.Cat.s.Blog.db.repositories.BlogpostRepository;
-import com.example.Cat.s.Blog.db.repositories.RoleRepository;
-import com.example.Cat.s.Blog.db.repositories.UserRepository;
 import com.example.Cat.s.Blog.db.entity.roles.Role;
 import com.example.Cat.s.Blog.db.entity.roles.RoleType;
 import com.example.Cat.s.Blog.db.entity.users.User;
+import com.example.Cat.s.Blog.db.repositories.BlogpostRepository;
+import com.example.Cat.s.Blog.db.repositories.RoleRepository;
+import com.example.Cat.s.Blog.db.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;

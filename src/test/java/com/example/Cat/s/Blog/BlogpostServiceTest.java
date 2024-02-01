@@ -1,12 +1,14 @@
 package com.example.Cat.s.Blog;
 
 import com.example.Cat.s.Blog.db.entity.posts.Blogpost;
-import com.example.Cat.s.Blog.db.repositories.BlogpostRepository;
-import com.example.Cat.s.Blog.db.repositories.RoleRepository;
-import com.example.Cat.s.Blog.db.repositories.UserRepository;
 import com.example.Cat.s.Blog.db.entity.roles.Role;
 import com.example.Cat.s.Blog.db.entity.roles.RoleType;
 import com.example.Cat.s.Blog.db.entity.users.User;
+import com.example.Cat.s.Blog.db.repositories.BlogpostRepository;
+import com.example.Cat.s.Blog.db.repositories.RoleRepository;
+import com.example.Cat.s.Blog.db.repositories.UserRepository;
+import com.example.Cat.s.Blog.services.exceptions.NonExistingBlogpostException;
+import com.example.Cat.s.Blog.services.exceptions.NonExistingUserException;
 import com.example.Cat.s.Blog.services.post.impl.StandardBlogpostService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -15,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.transaction.Transactional;
 import java.sql.Date;
 
 @SpringBootTest
@@ -40,7 +41,7 @@ class BlogpostServiceTest {
         roleRepository.saveAndFlush(role);
         userRepository.saveAndFlush(user);
         blogpost = new Blogpost("Cat is very cute!",
-                "Cat",
+                titleSaved,
                 user,
                 new Date(System.currentTimeMillis()));
         blogpostRepository.saveAndFlush(blogpost);
@@ -54,19 +55,27 @@ class BlogpostServiceTest {
     }
 
     @Test
+    public void showByIdTestWhenPostExistedThenGetPost() {
+        Assertions.assertEquals(blogpostRepository.findById(blogpost.getId()).get(), blogpostService.showById(blogpost.getId()));
+    }
+
+    @Test
+    public void showByIdTestWhenPostNonExistedThenNonExistingBlogpostException() {
+        Assertions.assertThrows(NonExistingBlogpostException.class,
+                () -> blogpostService.showById(Long.MAX_VALUE - 1));
+    }
+
+
+    @Test
     public void publishTestWhenPostAddedThenPostWithThatTitleAppearsInRepository() {
         blogpostService.publish(content, titleNonSaved, user.getId());
         Assertions.assertNotNull(blogpostRepository.findByTitle(titleNonSaved));
     }
 
     @Test
-    public void publishTestWhenExistingUserPublishPostThenTrue() {
-        Assertions.assertTrue(blogpostService.publish(content, titleNonSaved, user.getId()));
-    }
-
-    @Test
-    public void publishTestWhenNonExistingUserPublishPostThenFalse() {
-        Assertions.assertFalse(blogpostService.publish(content, titleNonSaved, Long.MAX_VALUE - 1));
+    public void publishTestWhenNonExistingUserPublishPostThenNonExistingUserException() {
+        Assertions.assertThrows(NonExistingUserException.class,
+                () -> blogpostService.publish(content, titleNonSaved, Long.MAX_VALUE - 1));
     }
 
 
@@ -86,14 +95,9 @@ class BlogpostServiceTest {
     }
 
     @Test
-    public void editTestWhenEditPostWithIdThatInRepositoryThenTrue() {
-        Long idSaved = blogpost.getId();
-        Assertions.assertTrue(blogpostService.edit(idSaved, content, titleNonSaved));
-    }
-
-    @Test
-    public void editTestWhenEditPostWithIdThatNotInRepositoryThenFalse() {
-        Assertions.assertFalse(blogpostService.edit(Long.MAX_VALUE - 1, content, titleNonSaved));
+    public void editTestWhenEditPostWithIdThatNotInRepositoryThenNonExistingBlogpostException() {
+        Assertions.assertThrows(NonExistingBlogpostException.class,
+                () -> blogpostService.edit(Long.MAX_VALUE - 1, content, titleNonSaved));
     }
 
 
@@ -106,13 +110,8 @@ class BlogpostServiceTest {
     }
 
     @Test
-    public void deleteTestWhenDeletePostWithIdThatInRepositoryThenTrue() {
-        Long idSaved = blogpost.getId();
-        Assertions.assertTrue(blogpostService.delete(idSaved));
-    }
-
-    @Test
-    public void deleteTestWhenDeletePostWithIdThatNotInRepositoryThenFalse() {
-        Assertions.assertFalse(blogpostService.delete(Long.MAX_VALUE - 1));
+    public void deleteTestWhenDeletePostWithIdThatNotInRepositoryThenNonExistingBlogpostException() {
+        Assertions.assertThrows(NonExistingBlogpostException.class,
+                () -> blogpostService.delete(Long.MAX_VALUE - 1));
     }
 }

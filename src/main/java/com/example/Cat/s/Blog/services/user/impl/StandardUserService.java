@@ -5,6 +5,8 @@ import com.example.Cat.s.Blog.db.entity.roles.RoleType;
 import com.example.Cat.s.Blog.db.entity.users.User;
 import com.example.Cat.s.Blog.db.repositories.RoleRepository;
 import com.example.Cat.s.Blog.db.repositories.UserRepository;
+import com.example.Cat.s.Blog.services.exceptions.ExistingUsernameException;
+import com.example.Cat.s.Blog.services.exceptions.NonExistingUserException;
 import com.example.Cat.s.Blog.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,9 +23,12 @@ public class StandardUserService implements UserService {
     private final RoleRepository roleRepository;
 
     @Override
-    public Optional<User> showById(Long id) {
-
-        return userRepository.findById(id);
+    public User showById(Long id) {
+        Optional<User> foundUser = userRepository.findById(id);
+        if (foundUser.isEmpty()) {
+            throw new NonExistingUserException();
+        }
+        return foundUser.get();
     }
 
     @Override
@@ -32,39 +37,36 @@ public class StandardUserService implements UserService {
     }
 
     @Override
-    public boolean add(String username) {
-
-        if (userRepository.findByUsername(username) == null) {
-            User addedUser = new User(
-                    username,
-                    roleRepository.findByName(RoleType.USER));
-            userRepository.saveAndFlush(addedUser);
-            return true;
+    public void add(String username) {
+        if (userRepository.findByUsername(username) != null) {
+            throw new ExistingUsernameException();
         }
-        return false;
+
+        User addedUser = new User(
+                username,
+                roleRepository.findByName(RoleType.USER));
+        userRepository.saveAndFlush(addedUser);
     }
 
     @Override
-    public boolean update(Long id, String username, Role userRole) {
+    public void update(Long id, String username, Role userRole) {
         Optional<User> foundUser = userRepository.findById(id);
-        if (foundUser.isPresent()) {
-            User updatedUser = foundUser.get();
-            updatedUser.setUsername(username);
-            updatedUser.setUserRole(userRole);
-            userRepository.saveAndFlush(updatedUser);
-            return true;
+        if (foundUser.isEmpty()) {
+            throw new NonExistingUserException();
         }
-        return false;
+        User updatedUser = foundUser.get();
+        updatedUser.setUsername(username);
+        updatedUser.setUserRole(userRole);
+        userRepository.saveAndFlush(updatedUser);
     }
 
     @Override
-    public boolean delete(Long id) {
+    public void delete(Long id) {
         Optional<User> foundUser = userRepository.findById(id);
-        if (foundUser.isPresent()) {
-            userRepository.deleteById(id);
-            return true;
+        if (foundUser.isEmpty()) {
+            throw new NonExistingUserException();
         }
-        return false;
+        userRepository.deleteById(id);
     }
 
 }
