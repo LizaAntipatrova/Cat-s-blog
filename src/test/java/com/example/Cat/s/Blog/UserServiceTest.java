@@ -20,6 +20,7 @@ public class UserServiceTest {
     private final String usernameSaved = "username000";
     private final String usernameNonSaved = "username";
     private final Role role = new Role(RoleType.USER);
+    private final String password = "password";
 
     @Autowired
     private UserRepository userRepository;
@@ -34,7 +35,7 @@ public class UserServiceTest {
     public void setup() {
         roleRepository.saveAndFlush(role);
 
-        user = new User(usernameSaved, role);
+        user = new User(usernameSaved, password, role);
         userRepository.saveAndFlush(user);
     }
 
@@ -58,13 +59,13 @@ public class UserServiceTest {
 
     @Test
     public void addTestWhenUserAddedThenUserWithThatUsernameAppearsInRepository() {
-        userService.add(usernameNonSaved);
+        userService.add(usernameNonSaved, password);
         Assertions.assertNotNull(userRepository.findByUsername(usernameNonSaved));
     }
 
     @Test
     public void addTestWhenUserWithNameThatInRepositoryAddedThenExistingUsernameException() {
-        Assertions.assertThrows(ExistingUsernameException.class, () -> userService.add(usernameSaved));
+        Assertions.assertThrows(ExistingUsernameException.class, () -> userService.add(usernameSaved, password));
 
     }
 

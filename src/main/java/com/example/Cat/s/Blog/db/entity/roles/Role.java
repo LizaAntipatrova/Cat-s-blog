@@ -1,11 +1,11 @@
 package com.example.Cat.s.Blog.db.entity.roles;
 
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Getter
@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Table(name = "roles")
-public class Role {
+public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "increment")
     private Long id;
@@ -25,4 +25,8 @@ public class Role {
         this.name = role;
     }
 
+    @Override
+    public String getAuthority() {
+        return name.name();
+    }
 }

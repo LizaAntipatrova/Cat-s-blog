@@ -17,7 +17,8 @@ import java.sql.Date;
 
 @Component
 @RequiredArgsConstructor
-@Profile("!test")       // spring_profiles_active=test в edit configuration стратегия игнора: https://www.baeldung.com/spring-profiles
+@Profile("!test")
+// spring_profiles_active=test в edit configuration стратегия игнора: https://www.baeldung.com/spring-profiles
 public class TestDataFiller {
 
     private final RoleRepository repositoryRole;
@@ -37,8 +38,8 @@ public class TestDataFiller {
 
 
         for (int i = 1; i < 3; i++) {
-            User usr = new User("usr " + i, roleUsr);
-            User adm = new User("usr 1" + i, roleAdm);
+            User usr = new User("usr " + i, "password", roleUsr);
+            User adm = new User("usr 1" + i, "password", roleAdm);
             repositoryUser.saveAndFlush(usr);
             repositoryUser.saveAndFlush(adm);
             Blogpost post = new Blogpost("content " + i, "title " + i, usr, new Date(System.currentTimeMillis()));

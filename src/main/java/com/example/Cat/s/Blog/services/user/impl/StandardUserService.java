@@ -37,14 +37,14 @@ public class StandardUserService implements UserService {
     }
 
     @Override
-    public void add(String username) {
+    public void add(String username, String password) {
         if (userRepository.findByUsername(username) != null) {
             throw new ExistingUsernameException();
         }
 
         User addedUser = new User(
                 username,
-                roleRepository.findByName(RoleType.USER));
+                password, roleRepository.findByName(RoleType.USER));
         userRepository.saveAndFlush(addedUser);
     }
 

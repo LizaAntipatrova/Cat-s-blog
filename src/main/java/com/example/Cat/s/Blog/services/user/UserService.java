@@ -12,7 +12,7 @@ public interface UserService {
 
     List<User> showAll();
 
-    void add(String username);
+    void add(String username, String password);
 
     void update(Long id, String username, Role userRole) throws NonExistingUserException;
 

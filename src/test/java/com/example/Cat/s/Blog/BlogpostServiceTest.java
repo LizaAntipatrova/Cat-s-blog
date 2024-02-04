@@ -25,7 +25,8 @@ class BlogpostServiceTest {
     private final String titleSaved = "Cat";
     private final String content = "Cat is very cute!";
     private final Role role = new Role(RoleType.USER);
-    private final User user = new User("username", role);
+    private final String password = "password";
+    private final User user = new User("username", password, role);
     @Autowired
     private UserRepository userRepository;
     @Autowired
