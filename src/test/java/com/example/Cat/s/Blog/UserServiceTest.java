@@ -19,7 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class UserServiceTest {
     private final String usernameSaved = "username000";
     private final String usernameNonSaved = "username";
-    private final Role role = new Role(RoleType.USER);
+    private final Role role = new Role(RoleType.ROLE_USER);
     private final String password = "password";
 
     @Autowired

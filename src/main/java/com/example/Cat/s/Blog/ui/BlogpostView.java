@@ -10,22 +10,24 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.virtuallist.VirtualList;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@RolesAllowed(value = {"USER", "ADMIN"})
 @Route(value = "/home", layout = MainLayout.class)
-public class MainView extends VerticalLayout {
+public class BlogpostView extends VerticalLayout {
     Grid<Blogpost> grid = new Grid<>(Blogpost.class);
 
 
-    public MainView(@Autowired
-                    BlogpostService blogpostService) {
+    public BlogpostView(@Autowired
+                        BlogpostService blogpostService) {
         addClassName("main-view");
         setSizeFull();
         configureGrid(blogpostService);
 //        add(grid);
         VirtualList<Blogpost> list = new VirtualList<>();
         list.setItems(blogpostService.showAll());
-        list.setRenderer(new ComponentRenderer<Div, Blogpost>(item -> {
+        list.setRenderer(new ComponentRenderer<>(item -> {
             Div div = new Div();
             div.add(new H6(item.getTitle()));
             div.add(new Paragraph(item.getContent()));

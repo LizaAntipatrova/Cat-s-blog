@@ -24,7 +24,7 @@ class BlogpostServiceTest {
     private final String titleNonSaved = "CatNoName";
     private final String titleSaved = "Cat";
     private final String content = "Cat is very cute!";
-    private final Role role = new Role(RoleType.USER);
+    private final Role role = new Role(RoleType.ROLE_USER);
     private final String password = "password";
     private final User user = new User("username", password, role);
     @Autowired

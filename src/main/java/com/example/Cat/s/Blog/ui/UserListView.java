@@ -5,8 +5,10 @@ import com.example.Cat.s.Blog.services.user.UserService;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@RolesAllowed(value = {"USER", "ADMIN"})
 @Route(value = "/users", layout = MainLayout.class)
 public class UserListView extends VerticalLayout {
     Grid<User> grid = new Grid<>(User.class);

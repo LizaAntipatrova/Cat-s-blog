@@ -44,7 +44,7 @@ public class StandardUserService implements UserService {
 
         User addedUser = new User(
                 username,
-                password, roleRepository.findByName(RoleType.USER));
+                password, roleRepository.findByName(RoleType.ROLE_USER));
         userRepository.saveAndFlush(addedUser);
     }
 

@@ -86,7 +86,7 @@ public class AuthUserService {
     @Deprecated
     public void getAdmin() {
         var user = getCurrentUser();
-        var role = roleRepository.findByName(RoleType.ADMIN);
+        var role = roleRepository.findByName(RoleType.ROLE_ADMIN);
         user.setUserRole(role);
         save(user);
     }
