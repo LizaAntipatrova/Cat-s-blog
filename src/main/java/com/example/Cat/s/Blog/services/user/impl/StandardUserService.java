@@ -22,6 +22,12 @@ public class StandardUserService implements UserService {
 
     private final RoleRepository roleRepository;
 
+    /**
+     * возвращает пользователя по заданному id
+     *
+     * @param id
+     * @return User
+     */
     @Override
     public User showById(Long id) {
         Optional<User> foundUser = userRepository.findById(id);
@@ -31,11 +37,19 @@ public class StandardUserService implements UserService {
         return foundUser.get();
     }
 
+    /**
+     * возвращает список всех пользователей
+     *
+     * @return список User
+     */
     @Override
     public List<User> showAll() {
         return userRepository.findAll();
     }
 
+    /**
+     * Добавляет нового пользователя в базу данных
+     */
     @Override
     public void add(String username, String password) {
         if (userRepository.findByUsername(username) != null) {
@@ -48,6 +62,13 @@ public class StandardUserService implements UserService {
         userRepository.saveAndFlush(addedUser);
     }
 
+    /**
+     * обновляет информацию  о пользователе по id
+     *
+     * @param id
+     * @param username
+     * @param userRole
+     */
     @Override
     public void update(Long id, String username, Role userRole) {
         Optional<User> foundUser = userRepository.findById(id);
@@ -55,11 +76,17 @@ public class StandardUserService implements UserService {
             throw new NonExistingUserException();
         }
         User updatedUser = foundUser.get();
+        //забабахать бы проверку на имя уникальное
         updatedUser.setUsername(username);
         updatedUser.setUserRole(userRole);
         userRepository.saveAndFlush(updatedUser);
     }
 
+    /**
+     * удаляет пользователя по id
+     *
+     * @param id
+     */
     @Override
     public void delete(Long id) {
         Optional<User> foundUser = userRepository.findById(id);

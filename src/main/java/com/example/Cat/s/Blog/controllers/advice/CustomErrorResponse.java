@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+//оболочка ответа на исключения
 @Data
 public class CustomErrorResponse {
     private LocalDateTime timestamp;

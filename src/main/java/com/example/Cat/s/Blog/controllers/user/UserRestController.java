@@ -25,6 +25,7 @@ class UserRestController {
 
     private final BlogpostMapper blogpostMapper;
 
+
     @GetMapping
     public List<UserDTO> getAllUsers() {
         List<User> users = userService.showAll();

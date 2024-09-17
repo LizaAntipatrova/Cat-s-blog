@@ -36,6 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Получаем токен из заголовка
         var authHeader = request.getHeader(HEADER_NAME);
+        // если токен пустой или другого формата, то  передаем запрос и ответ следующему фильтру
         if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, BEARER_PREFIX)) {
             filterChain.doFilter(request, response);
             return;

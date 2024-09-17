@@ -28,7 +28,9 @@ public class TestDataFiller {
 
     private final UserRepository repositoryUser;
 
-
+    /**
+     * при запуске приложения заполняет БД тестовыми данными
+     */
     @EventListener(ApplicationReadyEvent.class)
     public void fillTestData() {
         Role roleUsr = new Role(RoleType.ROLE_USER);

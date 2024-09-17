@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
-
+//указывает, что методы данного компонента будут использоваться сразу несколькими контроллерами
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -26,6 +26,7 @@ public class GlobalExceptionHandler {
 //        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 //    }
 
+    //метод для обработки исключений
     @ExceptionHandler(ExistingUsernameException.class)
     public ResponseEntity<CustomErrorResponse> handleExistingUserException(Exception ex, WebRequest request) {
         CustomErrorResponse errorResponse = new CustomErrorResponse();

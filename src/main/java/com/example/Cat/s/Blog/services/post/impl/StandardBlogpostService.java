@@ -23,7 +23,12 @@ public class StandardBlogpostService implements BlogpostService {
 
     private final UserRepository userRepository;
 
-
+    /**
+     * возвращает пост по заданнному id
+     *
+     * @param id
+     * @return Blogpost
+     */
     @Override
     public Blogpost showById(Long id) {
         Optional<Blogpost> foundBlogpost = blogpostRepository.findById(id);
@@ -33,13 +38,26 @@ public class StandardBlogpostService implements BlogpostService {
         return foundBlogpost.get();
     }
 
+    /**
+     * возвращает список всех постов
+     *
+     * @return список всех постов
+     */
     @Override
     public List<Blogpost> showAll() {
         return blogpostRepository.findAll();
     }
 
+    /**
+     * Публикует пост, помещает в БД
+     *
+     * @param content  - содержание поста
+     * @param title    - заголовок поста
+     * @param authorId - id автора поста
+     */
     @Override
     public void publish(String content, String title, Long authorId) {
+        //а к автору не надо прихуярить?
         Optional<User> foundAuthor = userRepository.findById(authorId);
         if (foundAuthor.isEmpty()) {
             throw new NonExistingUserException();
@@ -49,6 +67,13 @@ public class StandardBlogpostService implements BlogpostService {
         blogpostRepository.saveAndFlush(blogpost);
     }
 
+    /**
+     * редактирует заголовок и содержание поста
+     *
+     * @param id
+     * @param content
+     * @param title
+     */
     @Override
     public void edit(Long id, String content, String title) {
         Optional<Blogpost> foundBlogpost = blogpostRepository.findById(id);
@@ -61,6 +86,11 @@ public class StandardBlogpostService implements BlogpostService {
         blogpostRepository.saveAndFlush(blogpost);
     }
 
+    /**
+     * удаляет пост из БД
+     *
+     * @param id
+     */
     @Override
     public void delete(Long id) {
         Optional<Blogpost> foundBlogpost = blogpostRepository.findById(id);
