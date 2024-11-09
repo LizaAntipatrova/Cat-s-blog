@@ -1,10 +1,12 @@
 package com.example.Cat.s.Blog.services.user.impl;
 
-import com.example.Cat.s.Blog.db.repositories.RoleRepository;
-import com.example.Cat.s.Blog.db.repositories.UserRepository;
 import com.example.Cat.s.Blog.db.entity.roles.Role;
 import com.example.Cat.s.Blog.db.entity.roles.RoleType;
 import com.example.Cat.s.Blog.db.entity.users.User;
+import com.example.Cat.s.Blog.db.repositories.RoleRepository;
+import com.example.Cat.s.Blog.db.repositories.UserRepository;
+import com.example.Cat.s.Blog.services.exceptions.ExistingUsernameException;
+import com.example.Cat.s.Blog.services.exceptions.NonExistingUserException;
 import com.example.Cat.s.Blog.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,50 +22,78 @@ public class StandardUserService implements UserService {
 
     private final RoleRepository roleRepository;
 
+    /**
+     * возвращает пользователя по заданному id
+     *
+     * @param id
+     * @return User
+     */
     @Override
-    public Optional<User> showById(Long id){
-        return userRepository.findById(id);
+    public User showById(Long id) {
+        Optional<User> foundUser = userRepository.findById(id);
+        if (foundUser.isEmpty()) {
+            throw new NonExistingUserException();
+        }
+        return foundUser.get();
     }
 
+    /**
+     * возвращает список всех пользователей
+     *
+     * @return список User
+     */
     @Override
-    public List<User> showAll(){
+    public List<User> showAll() {
         return userRepository.findAll();
     }
 
+    /**
+     * Добавляет нового пользователя в базу данных
+     */
     @Override
-    public boolean add(String username) {
-
-        if (userRepository.findByUsername(username) == null) {
-            User addedUser = new User(
-                    username,
-                    roleRepository.findByName(RoleType.USER));
-            userRepository.saveAndFlush(addedUser);
-            return true;
+    public void add(String username, String password) {
+        if (userRepository.findByUsername(username) != null) {
+            throw new ExistingUsernameException();
         }
-        return false;
+
+        User addedUser = new User(
+                username,
+                password, roleRepository.findByName(RoleType.ROLE_USER));
+        userRepository.saveAndFlush(addedUser);
     }
 
+    /**
+     * обновляет информацию  о пользователе по id
+     *
+     * @param id
+     * @param username
+     * @param userRole
+     */
     @Override
-    public boolean update(Long id, String username, Role userRole) {
+    public void update(Long id, String username, Role userRole) {
         Optional<User> foundUser = userRepository.findById(id);
-        if (foundUser.isPresent()) {
-            User updatedUser = foundUser.get();
-            updatedUser.setUsername(username);
-            updatedUser.setUserRole(userRole);
-            userRepository.saveAndFlush(updatedUser);
-            return true;
+        if (foundUser.isEmpty()) {
+            throw new NonExistingUserException();
         }
-        return false;
+        User updatedUser = foundUser.get();
+        //забабахать бы проверку на имя уникальное
+        updatedUser.setUsername(username);
+        updatedUser.setUserRole(userRole);
+        userRepository.saveAndFlush(updatedUser);
     }
 
+    /**
+     * удаляет пользователя по id
+     *
+     * @param id
+     */
     @Override
-    public boolean delete(Long id) {
+    public void delete(Long id) {
         Optional<User> foundUser = userRepository.findById(id);
-        if (foundUser.isPresent()) {
-            userRepository.deleteById(id);
-            return true;
+        if (foundUser.isEmpty()) {
+            throw new NonExistingUserException();
         }
-        return false;
+        userRepository.deleteById(id);
     }
 
 }

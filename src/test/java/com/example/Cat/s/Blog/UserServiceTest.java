@@ -1,10 +1,12 @@
 package com.example.Cat.s.Blog;
 
-import com.example.Cat.s.Blog.db.repositories.RoleRepository;
-import com.example.Cat.s.Blog.db.repositories.UserRepository;
 import com.example.Cat.s.Blog.db.entity.roles.Role;
 import com.example.Cat.s.Blog.db.entity.roles.RoleType;
 import com.example.Cat.s.Blog.db.entity.users.User;
+import com.example.Cat.s.Blog.db.repositories.RoleRepository;
+import com.example.Cat.s.Blog.db.repositories.UserRepository;
+import com.example.Cat.s.Blog.services.exceptions.ExistingUsernameException;
+import com.example.Cat.s.Blog.services.exceptions.NonExistingUserException;
 import com.example.Cat.s.Blog.services.user.impl.StandardUserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -17,7 +19,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class UserServiceTest {
     private final String usernameSaved = "username000";
     private final String usernameNonSaved = "username";
-    private final Role role = new Role(RoleType.USER);
+    private final Role role = new Role(RoleType.ROLE_USER);
+    private final String password = "password";
 
     @Autowired
     private UserRepository userRepository;
@@ -32,7 +35,7 @@ public class UserServiceTest {
     public void setup() {
         roleRepository.saveAndFlush(role);
 
-        user = new User(usernameSaved, role);
+        user = new User(usernameSaved, password, role);
         userRepository.saveAndFlush(user);
     }
 
@@ -44,19 +47,25 @@ public class UserServiceTest {
     }
 
     @Test
+    public void showByIdTestWhenUserExistedThenGetUser() {
+        Assertions.assertEquals(userRepository.findById(user.getId()).get(), userService.showById(user.getId()));
+    }
+
+    @Test
+    public void showByIdTestWhenUserNonExistedThenNonExistingUserException() {
+        Assertions.assertThrows(NonExistingUserException.class,
+                () -> userService.showById(Long.MAX_VALUE - 1));
+    }
+
+    @Test
     public void addTestWhenUserAddedThenUserWithThatUsernameAppearsInRepository() {
-        userService.add(usernameNonSaved);
+        userService.add(usernameNonSaved, password);
         Assertions.assertNotNull(userRepository.findByUsername(usernameNonSaved));
     }
 
     @Test
-    public void addTestWhenUserWithNameThatNotInRepositoryAddedThenTrue() {
-        Assertions.assertTrue(userService.add(usernameNonSaved));
-    }
-
-    @Test
-    public void addTestWhenUserWithNameThatInRepositoryAddedThenFalse() {
-        Assertions.assertFalse(userService.add(usernameSaved));
+    public void addTestWhenUserWithNameThatInRepositoryAddedThenExistingUsernameException() {
+        Assertions.assertThrows(ExistingUsernameException.class, () -> userService.add(usernameSaved, password));
 
     }
 
@@ -77,14 +86,8 @@ public class UserServiceTest {
     }
 
     @Test
-    public void updateTestWhenUpdateUserWithIdThatInRepositoryThenTrue() {
-        Long idSaved = user.getId();
-        Assertions.assertTrue(userService.update(idSaved, usernameNonSaved, role));
-    }
-
-    @Test
-    public void updateTestWhenUpdateUserWithIdThatNotInRepositoryThenFalse() {
-        Assertions.assertFalse(userService.update(Long.MAX_VALUE - 1, usernameNonSaved, role));
+    public void updateTestWhenUpdateUserWithIdThatNotInRepositoryThenNonExistingUserException() {
+        Assertions.assertThrows(NonExistingUserException.class, () -> userService.update(Long.MAX_VALUE - 1, usernameNonSaved, role));
     }
 
 
@@ -97,14 +100,8 @@ public class UserServiceTest {
     }
 
     @Test
-    public void deleteTestWhenDeleteUserWithIdThatInRepositoryThenTrue() {
-        Long idSaved = user.getId();
-        Assertions.assertTrue(userService.delete(idSaved));
-    }
-
-    @Test
-    public void deleteTestWhenDeleteUserWithIdThatNotInRepositoryThenFalse() {
-        Assertions.assertFalse(userService.delete(Long.MAX_VALUE - 1));
+    public void deleteTestWhenDeleteUserWithIdThatNotInRepositoryThenNonExistingUserException() {
+        Assertions.assertThrows(NonExistingUserException.class, () -> userService.delete(Long.MAX_VALUE - 1));
     }
 
 }

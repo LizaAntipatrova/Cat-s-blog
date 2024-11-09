@@ -1,6 +1,14 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven { setUrl("https://maven.vaadin.com/vaadin-prereleases") }
+		maven { setUrl("https://repo.spring.io/milestone") }
+	}
+}
+
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.7.17'
+	id 'org.springframework.boot' version '3.1.5'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
@@ -15,21 +23,47 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
 }
 
 repositories {
 	mavenCentral()
+	maven { setUrl("https://maven.vaadin.com/vaadin-prereleases") }
+	maven { setUrl("https://repo.spring.io/milestone") }
+	maven { setUrl("https://maven.vaadin.com/vaadin-addons") }
+
 }
 
 dependencies {
+	implementation 'com.vaadin:vaadin-spring-boot-starter'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.modelmapper:modelmapper:3.2.0'
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+	implementation "org.springframework.boot:spring-boot-starter-security"
+	implementation "io.jsonwebtoken:jjwt-api:0.12.3"
+	implementation "io.jsonwebtoken:jjwt-impl:0.12.3"
+	implementation "io.jsonwebtoken:jjwt-jackson:0.12.3"
+	implementation "org.springframework.boot:spring-boot-starter-validation"
+	implementation "org.apache.commons:commons-lang3:3.14.0"
+	implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0"
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "com.vaadin:vaadin-bom:$vaadinVersion"
+	}
 }
 
 tasks.named('bootBuildImage') {

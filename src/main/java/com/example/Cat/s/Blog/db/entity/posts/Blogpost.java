@@ -1,12 +1,12 @@
 package com.example.Cat.s.Blog.db.entity.posts;
 
 import com.example.Cat.s.Blog.db.entity.users.User;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
@@ -23,6 +23,7 @@ public class Blogpost {
     private String content;         //html mb
     private String title;
 
+    @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.EAGER)
     private User author;
     private Date publicationDate;
@@ -33,5 +34,7 @@ public class Blogpost {
         this.author = author;
         this.publicationDate = publicationDate;
     }
+
+
 }
 

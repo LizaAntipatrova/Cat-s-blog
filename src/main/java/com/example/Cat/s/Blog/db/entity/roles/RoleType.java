@@ -1,6 +1,6 @@
 package com.example.Cat.s.Blog.db.entity.roles;
 
 public enum RoleType {
-    ADMIN,
-    USER
+    ROLE_ADMIN,      //mb ROLE_ADMIN
+    ROLE_USER
 }
